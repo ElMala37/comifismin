@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>COMIF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        nav {
+        background-color: #8B0000; /* Couleur de fond de la barre de navigation */
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        }
+
+
+        nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 30px; /* Taille de police pour les liens de la barre de navigation */
+        padding: 4px 12px; /* Espacement autour des liens de la barre de navigation */
+        border-radius: 5px; /* Bordure arrondie pour les liens de la barre de navigation */
+        background-color: #800000; /* Couleur de fond des liens de la barre de navigation */
+        }
+
+        .navbar {
+          background-color: #000;
+          color: #fff;
+          text-align: center;
+          padding: 10px;
+        }
+
+        nav a:hover {
+          background-color: #B22222; /* Couleur de fond des liens lors du survol */
+        }
+
+        .navbar a {
+          color: #fff;
+          text-decoration: none;
+          margin: 0 10px;
+        }
+        .navbar-dark {
+          background-color: #000080;
+          color: #fff;
+          text-align: center;
+          padding: 10px;
+        }
+
+        section {
+            position: absolute;
+            top: 0px;
+            left: 100px;
+            position: relative;
+            margin-bottom:300px;
+        }
+
+        #modForm2 {
+            position: absolute;
+            top: 50px;
+            left: 850px;
+            display: none;
+        }
+
+        #modForm3 {
+            position: absolute;
+            top: 50px;
+            left: 850px;
+            display: none;
+        }
+
+        #modForm4 {
+            position: absolute;
+            top: 50px;
+            left: 850px;
+            display: none;
+        }
+
+        #modForm5 {
+            position: absolute;
+            top: 50px;
+            left: 850px;
+            display: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+        table {
+          border-collapse: collapse;
+          width: 800px;
+        }
+
+        th, td {
+          border: 1px solid black;
+          padding: 8px;
+        }
+
+        .scrollable-table {
+          position: absolute;
+          top: 100px;
+          left: 0px;
+          height: 300px;
+          overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>COMIF</h1>
+    <h4 style="color: white;">Connecté en tant que : {{ username }}</h4>
+    <a href="{% url 'logout' %}" style="font-size: 20px; position: absolute; top: 40px; right: 100px;
+     color: white; text-decoration: none;">Déconnexion</a>
+</header>
+
+  <nav>
+    <a href="/welcome">Accueil</a>
+    <a href="/ajtvente">Ventes</a>
+    <a href="/gstsoldes">Caisse</a>
+    <a href="/ajtcotisants">Cotisations</a>
+    <a href="/ajtproduits">Stockage</a>
+    <a href="/tresorerie">Bureau</a>
+  </nav>
+  <div class="navbar">
+    <a href="/ajtvente">Ajouter une vente</a>
+    <a href="/voirventes">Voir les ventes</a>
+    <a href="/voirsupvente">Voir les suppressions</a>
+    <a href="/gstfavoris">Favoris</a>
+  </div>
+<section>
+    <h2>Chercher un produit pour l'ajouter ou le supprimer des favoris:</h2>
+
+    <div class="form-group">
+        <input id="search" class="form-control" type="text" placeholder="Search...">
+    </div>
+    <br />
+
+    <div class="scrollable-table">
+        <table width="750" border="1" style="border-collapse:collapse;">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+                <th>+/- Favori Tibbar</th>
+                <th>+/- Favori Tipause</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+            {% for produit in dataProduits %}
+            <tr>
+                <td>{{ produit.nom }}</td>
+                <td>{{ produit.type_produit }}</td>
+                <td>{{ produit.quantity }}</td>
+                <td>{{ produit.prix }} €</td>
+                {% if produit.favoris_tibbar.all %}
+                    <td>
+                        <button class="modBtn3" type="button" data-produit-id="{{ produit.id }}"
+                                data-nom="{{ produit.nom }}" data-favtb-id="{{ produit.favoris_tibbar.first.id }}" title="Modifier">
+                            Supprimer des favoris du tibbar
+                        </button>
+                    </td>
+                {% else %}
+                    <td>
+                        <button class="modBtn2" type="button" data-produit-id="{{ produit.id }}"
+                                data-nom="{{ produit.nom }}" title="Modifier">
+                            Ajouter dans les favoris du tibbar
+                        </button>
+                    </td>
+                {% endif %}
+                {% if produit.favoris_tipause.all%}
+                    <td>
+                        <button class="modBtn5" type="button" data-produit-id="{{ produit.id }}"
+                                data-nom="{{ produit.nom }}" data-favtp-id="{{ produit.favoris_tipause.first.id }}" title="Modifier">
+                            Supprimer des favoris de la tipause
+                        </button>
+                    </td>
+                {% else %}
+                    <td>
+                        <button class="modBtn4" type="button" data-produit-id="{{ produit.id }}"
+                                data-nom="{{ produit.nom }}" title="Modifier">
+                            Ajouter dans les favoris de la tipause
+                        </button>
+                    </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <form id="modForm2" method="POST" action="{% url 'ajt_favoris_tb' %}" class="hidden">
+        {% csrf_token %}
+        <div class="modal-body">
+            <input name="id_modified2" type="hidden" id="id_modified2">
+            <strong >Ajouter <span id="produitNom3"></span> dans les favoris du Tibbar</strong>
+            <br><br>
+            <label id="label_id2" class="text-dark checkbox-inline">
+                <input type="radio" name="favoris" value="Oui" checked> Oui
+            </label>
+            <br>
+            <label id="label_id3" class="text-dark checkbox-inline">
+                <input type="radio" name="favoris" value="Non"> Non
+            </label>
+            <br>
+        </div>
+            <br>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+
+    <form id="modForm3" method="POST" action="{% url 'del_favoris_tb' %}" class="hidden">
+        {% csrf_token %}
+        <div class="modal-body">
+            <input name="id_modified3" type="hidden" id="id_modified3">
+            <strong >Supprimer <span id="produitNom4"></span> des favoris du Tibbar ?</strong>
+            <br><br>
+            <label id="label_id4" class="text-dark checkbox-inline">
+                <input type="radio" name="favoris" value="Oui" checked> Oui
+            </label>
+            <br>
+            <label id="label_id5" class="text-dark checkbox-inline">
+                <input type="radio" name="favoris" value="Non"> Non
+            </label>
+            <br>
+        </div>
+            <br>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+
+    <form id="modForm4" method="POST" action="{% url 'ajt_favoris_tp' %}" class="hidden">
+        {% csrf_token %}
+        <div class="modal-body">
+            <input name="id_modified4" type="hidden" id="id_modified4">
+            <strong >Ajouter <span id="produitNom5"></span> dans les favoris de la Tipause</strong>
+            <br><br>
+            <label id="label_id6" class="text-dark checkbox-inline">
+                <input type="radio" name="favoris" value="Oui" checked> Oui
+            </label>
+            <br>
+            <label id="label_id7" class="text-dark checkbox-inline">
+                <input type="radio" name="favoris" value="Non"> Non
+            </label>
+            <br>
+        </div>
+            <br>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+
+    <form id="modForm5" method="POST" action="{% url 'del_favoris_tp' %}" class="hidden">
+        {% csrf_token %}
+        <div class="modal-body">
+            <input name="id_modified5" type="hidden" id="id_modified5">
+            <strong >Supprimer <span id="produitNom6"></span> des favoris de la Tipause ?</strong>
+            <br><br>
+            <label id="label_id8" class="text-dark checkbox-inline">
+                <input type="radio" name="favoris" value="Oui" checked> Oui
+            </label>
+            <br>
+            <label id="label_id9" class="text-dark checkbox-inline">
+                <input type="radio" name="favoris" value="Non"> Non
+            </label>
+            <br>
+        </div>
+            <br>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var maxRows = 8; // Nombre maximum de lignes à afficher
+            // Cacher toutes les lignes au-delà du nombre maximum de lignes
+            $("#myTable tr").each(function (index) {
+                if (index >= maxRows) {
+                    $(this).hide();
+                }
+            });
+
+             $("#search").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                var rowCount = 0;
+
+                $("#myTable tr").each(function () {
+                    var currentRow = $(this);
+
+                    if (currentRow.text().toLowerCase().indexOf(value) > -1) {
+                        currentRow.show();
+                        rowCount++;
+
+                        if (rowCount > maxRows) {
+                            currentRow.hide();
+                        }
+                    } else {
+                        currentRow.hide();
+                    }
+                });
+            });
+
+            $(".modBtn2").on("click", function () {
+                var produitId = $(this).data("produit-id");
+                var produitNom = $(this).data("nom");
+                $("#id_modified2").val(produitId);
+                $("#produitNom3").text(produitNom);
+                $("#modForm3").hide();
+                $("#modForm4").hide();
+                $("#modForm5").hide();
+                $("#modForm2").show();
+            });
+            $(".modBtn3").on("click", function () {
+                var favId = $(this).data("favtb-id");
+                var produitNom = $(this).data("nom");
+                $("#id_modified3").val(favId);
+                $("#produitNom4").text(produitNom);
+                $("#modForm2").hide();
+                $("#modForm4").hide();
+                $("#modForm2").hide();
+                $("#modForm3").show();
+            });
+            $(".modBtn4").on("click", function () {
+                var produitId = $(this).data("produit-id");
+                var produitNom = $(this).data("nom");
+                $("#id_modified4").val(produitId);
+                $("#produitNom5").text(produitNom);
+                $("#modForm3").hide();
+                $("#modForm5").hide();
+                $("#modForm2").hide();
+                $("#modForm4").show();
+            });
+            $(".modBtn5").on("click", function () {
+                var favId = $(this).data("favtp-id");
+                var produitNom = $(this).data("nom");
+                $("#id_modified5").val(favId);
+                $("#produitNom6").text(produitNom);
+                $("#modForm2").hide();
+                $("#modForm3").hide();
+                $("#modForm4").hide();
+                $("#modForm5").show();
+            });
+        });
+    </script>
+</section>
+
+<footer>
+    <p>&copy; 2023 COMIF Bar Étudiant. Tous droits réservés.</p>
+</footer>
+</body>
+</html>

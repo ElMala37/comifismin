@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>COMIF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        nav {
+        background-color: #8B0000; /* Couleur de fond de la barre de navigation */
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        }
+
+
+        nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 30px; /* Taille de police pour les liens de la barre de navigation */
+        padding: 4px 12px; /* Espacement autour des liens de la barre de navigation */
+        border-radius: 5px; /* Bordure arrondie pour les liens de la barre de navigation */
+        background-color: #800000; /* Couleur de fond des liens de la barre de navigation */
+        }
+
+        .navbar {
+          background-color: #000;
+          color: #fff;
+          text-align: center;
+          padding: 10px;
+        }
+
+        nav a:hover {
+          background-color: #B22222; /* Couleur de fond des liens lors du survol */
+        }
+
+        .navbar a {
+          color: #fff;
+          text-decoration: none;
+          margin: 0 10px;
+        }
+        .navbar-dark {
+          background-color: #000080;
+          color: #fff;
+          text-align: center;
+          padding: 10px;
+        }
+
+        section {
+            position: absolute;
+            top: O px;
+            left: 100px;
+            position: relative;
+        }
+
+        #modForm {
+            position: absolute;
+            top: 50px;
+            left: 750px;
+            display: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+        table {
+          border-collapse: collapse;
+          width: 1000px;
+        }
+
+        th, td {
+          border: 1px solid black;
+          padding: 8px;
+        }
+
+        .scrollable-table {
+          position: absolute;
+          top: 100px;
+          left: Opx;
+          height: 250px;
+          overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>COMIF</h1>
+    <h4 style="color: white;">Connecté en tant que : {{ username }}</h4>
+    <a href="{% url 'logout' %}" style="font-size: 20px; position: absolute; top: 40px; right: 100px;
+     color: white; text-decoration: none;">Déconnexion</a>
+</header>
+
+  <nav>
+    <a href="/welcome">Accueil</a>
+    <a href="/ajtvente">Ventes</a>
+    <a href="/gstsoldes">Caisse</a>
+    <a href="/ajtcotisants">Cotisations</a>
+    <a href="/ajtproduits">Stockage</a>
+    <a href="/tresorerie">Bureau</a>
+  </nav>
+  <div class="navbar">
+    <a href="/ajtvente">Ajouter une vente</a>
+    <a href="/voirventes">Voir les ventes</a>
+    <a href="/voirsupvente">Voir les suppressions</a>
+    <a href="/gstfavoris">Favoris</a>
+  </div>
+<section>
+    <h2>Chercher une supression de vente:</h2>
+
+    <div class="form-group">
+        <input id="search" class="form-control" type="text" placeholder="Search...">
+    </div>
+    <br />
+
+    <div class="scrollable-table">
+        <table width="700" border="1" style="border-collapse:collapse;">
+            <thead>
+            <tr>
+                <th>Client</th>
+                <th>Produit</th>
+                <th>Prix</th>
+                <th>Compte serveur</th>
+                <th>Date de suppression</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+            {% for s in dataSupVentes|slice:":10" %}
+              <tr>
+                <td>{{ s.client }}</td>
+                <td>{{ s.produit }}</td>
+                <td>{{ s.prix }} €</td>
+                <td>{{ s.compte_serveur }}</td>
+                <td>{{ s.date_suppression }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#search").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+</section>
+
+<footer>
+    <p>&copy; 2023 COMIF Bar Étudiant. Tous droits réservés.</p>
+</footer>
+</body>
+</html>

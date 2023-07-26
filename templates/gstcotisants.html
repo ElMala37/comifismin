@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>COMIF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        nav {
+        background-color: #8B0000; /* Couleur de fond de la barre de navigation */
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        }
+
+
+        nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 30px; /* Taille de police pour les liens de la barre de navigation */
+        padding: 4px 12px; /* Espacement autour des liens de la barre de navigation */
+        border-radius: 5px; /* Bordure arrondie pour les liens de la barre de navigation */
+        background-color: #800000; /* Couleur de fond des liens de la barre de navigation */
+        }
+
+        .navbar {
+          background-color: #000;
+          color: #fff;
+          text-align: center;
+          padding: 10px;
+        }
+
+        nav a:hover {
+          background-color: #B22222; /* Couleur de fond des liens lors du survol */
+        }
+
+        .navbar a {
+          color: #fff;
+          text-decoration: none;
+          margin: 0 10px;
+        }
+
+        section {
+            position: absolute;
+            top: 0px;
+            left: 25px;
+            position: relative;
+            padding: 20px;
+            margin-bottom: 400px; /* Ajout de la marge inférieure */
+        }
+
+        #modForm2 {
+            position: absolute;
+            top: 20px;
+            left: 750px;
+            display: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+        table {
+          border-collapse: collapse;
+          width: 700px;
+        }
+
+        th, td {
+          border: 1px solid black;
+          padding: 8px;
+        }
+
+        .scrollable-table {
+          position: absolute;
+          top: 100px;
+          left: 0px;
+          height: 350px;
+          overflow-y: scroll;
+        }
+        .scrollable-table2 {
+          position: absolute;
+          top: 80px;
+          left: 0px;
+          height: 300px;
+          overflow-y: scroll;
+        }
+        .selected-row {
+            background-color: #d9ffd9 !important; /* Light green color */
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>COMIF</h1>
+    <h4 style="color: white;">Connecté en tant que : {{ username }}</h4>
+    <a href="{% url 'logout' %}" style="font-size: 20px; position: absolute; top: 40px; right: 100px;
+     color: white; text-decoration: none;">Déconnexion</a>
+</header>
+
+  <nav>
+    <a href="/welcome">Accueil</a>
+    <a href="/ajtvente">Ventes</a>
+    <a href="/gstsoldes">Caisse</a>
+    <a href="/ajtcotisants">Cotisations</a>
+    <a href="/ajtproduits">Stockage</a>
+    <a href="/tresorerie">Bureau</a>
+  </nav>
+  <div class="navbar">
+    <a href="/ajtcotisants">Ajouter un cotisant</a>
+    <a href="/gstcotisants">Modifier cotisations</a>
+    <a href="/supcotisants">Supprimer un cotisant</a>
+    <a href="/promo">Modifier les promos</a>
+    <a href="/voirsupcot">Voir les suppressions</a>
+  </div>
+<section>
+    <div class="form-group" style="position:absolute;top:0px;left:0px;">
+        <h2>Chercher un cotisant pour modifier leur solde:</h2>
+        <input id="search" class="form-control" type="text" placeholder="Search...">
+    </div>
+    <br />
+
+    <div class="scrollable-table">
+        <table width="700" border="1" style="border-collapse:collapse;">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Solde</th>
+                <th>Date d'inscription</th>
+                <th>Temps cotisation</th>
+                <th>Date fin de cotisation</th>
+                <th>Modifier durée de cotisation</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+            {% for cotisant in dataCotisants %}
+            <tr>
+                <td>{{ cotisant.nom }}</td>
+                <td>{{ cotisant.prenom }}</td>
+                <td>{{ cotisant.solde }} €</td>
+                <td>{{ cotisant.date_inscription }}</td>
+                <td>{{ cotisant.temps_cotisation }}</td>
+                <td>{{ cotisant.date_fin }}</td>
+                <td>
+                    <button class="modBtn2" type="button" data-cotisant-id="{{ cotisant.id }}"
+                            data-nom="{{ cotisant.nom }}"
+                            data-prenom="{{ cotisant.prenom }}" title="Modifier">
+                        Modifier la durée de cotisation
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <form id="modForm2" method="POST" action="{% url 'update_duree' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+            <input name="cotisants_ids" type="hidden" id="cotisants_ids" required>
+            <label id="label_id" class="text-dark checkbox-inline">
+                <strong id="id_strong2">Changer la durée de cotisation de cette liste </strong>
+                La nouvelle date d'inscription sera aujourd'hui.
+            </label>
+        </div>
+        <br/>
+        <label for="selectOption">Choisir une option :</label>
+                <select id="selectOption" name="selectOption">
+                    <option value="1 an">1 an</option>
+                    <option value="6 mois">6 mois</option>
+                    <option value="6 jours">6 jours</option>
+                </select>
+                <br />
+        <br />
+        <div class="scrollable-table2">
+            <div id="generatedCode"></div>
+        </div>
+        <br />
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" style="position:absolute;top:405px;left:0px;">Modifier</button>
+        </div>
+    </form>
+
+
+        $(document).ready(function () {
+            var maxRows = 8; // Nombre maximum de lignes à afficher
+            // Cacher toutes les lignes au-delà du nombre maximum de lignes
+            $("#myTable tr").each(function (index) {
+                if (index >= maxRows) {
+                    $(this).hide();
+                }
+            });
+
+             $("#search").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                var rowCount = 0;
+
+                $("#myTable tr").each(function () {
+                    var currentRow = $(this);
+
+                    if (currentRow.text().toLowerCase().indexOf(value) > -1) {
+                        currentRow.show();
+                        rowCount++;
+
+                        if (rowCount > maxRows) {
+                            currentRow.hide();
+                        }
+                    } else {
+                        currentRow.hide();
+                    }
+                });
+            });
+            var ListId = [];
+            var ListNom = [];
+            var ListPrenom = [];
+            var CharId = "";
+            var ListRow = [];
+            $(".modBtn2").on("click", function () {
+            var cotisantId = $(this).data("cotisant-id");
+            var cotisantNom = $(this).data("nom");
+            var cotisantPrenom = $(this).data("prenom");
+            $("#cotisantId").val(cotisantId);
+            $("#cotisantNom2").text(cotisantNom);
+            $("#cotisantPrenom2").text(cotisantPrenom);
+                if (ListId.indexOf(cotisantId) === -1) {
+                    // Retrouver la ligne parente de l'élément bouton
+                    var row = $(this).closest("tr");
+                    ListRow.push(row);
+                    // Add the "selected-row" class to the selected row
+                    $(this).closest("tr").addClass("selected-row");
+                    ListId.push(cotisantId);
+                    ListNom.push(cotisantNom);
+                    ListPrenom.push(cotisantPrenom);
+                    console.log(ListId);
+                    console.log(ListNom);
+                    console.log(ListPrenom);
+                    // Début de la génération du tableau HTML
+                    var htmlTableBuilder = "";
+                    // Début de la génération du tableau HTML
+                    htmlTableBuilder = "<table width='400' border='1' style='border-collapse:collapse;'>";
+                    // Ajout de l'en-tête du tableau
+                    htmlTableBuilder += "<tr><th></th><th>Nom</th><th>Prenom</th><th>Retirer de la liste</th></tr>";
+                    // Parcours des listes avec une boucle for
+                    for (var i = 0; i < ListNom.length; i++) {
+                        var Nom = ListNom[i];
+                        var Prenom = ListPrenom[i];
+                        // Ajout d'une ligne au tableau pour chaque élément de la liste
+                        htmlTableBuilder += "<tr><td>" + (i + 1) + "</td><td>" + Nom + "</td><td>" + Prenom + "</td><td><button class='modBtn3' data-index='" + i + "'>Retirer de la liste</button></td></tr>";
+                    }
+                    // Fin du tableau HTML
+                    htmlTableBuilder += "</table>";
+                    console.log(htmlTableBuilder);
+                    $("#generatedCode").html(htmlTableBuilder.toString());
+                    CharId=""
+                    for (var i = 0; i < ListId.length; i++) {
+                            CharId += ListId[i]+",";
+                        }
+                    console.log(CharId);
+                    $("#cotisants_ids").val(CharId);
+                    $("#modForm2").show();}
+            });
+            $(document).on("click", ".modBtn3", function () {
+                var index = $(this).data("index");
+                ListNom.splice(index, 1);
+                ListPrenom.splice(index, 1);
+                ListId.splice(index, 1);
+                console.log(ListNom);
+                console.log(ListPrenom);
+                console.log(ListId);
+                // Retirer la classe "selected-row" de la ligne parente
+                ListRow[index].removeClass("selected-row");
+                ListRow.splice(index, 1);
+                // Réafficher le tableau mis à jour
+                var htmlTableBuilder = "";
+                // Début de la génération du tableau HTML
+                htmlTableBuilder = "<table width='400' border='1' style='border-collapse:collapse;'>";
+                // Ajout de l'en-tête du tableau
+                htmlTableBuilder += "<tr><th></th><th>Nom</th><th>Prenom</th><th>Retirer de la liste</th></tr>";
+                // Parcours des listes avec une boucle for
+                for (var i = 0; i < ListNom.length; i++) {
+                    var Nom = ListNom[i];
+                    var Prenom = ListPrenom[i];
+                    // Ajout d'une ligne au tableau pour chaque élément de la liste
+                    htmlTableBuilder += "<tr><td>" + (i + 1) + "</td><td>" + Nom + "</td><td>" + Prenom + "</td><td><button class='modBtn3' data-index='" + i + "'>Retirer de la liste</button></td></tr>";
+                }
+                // Fin du tableau HTML
+                htmlTableBuilder += "</table>";
+                console.log(htmlTableBuilder);
+                $("#generatedCode").html(htmlTableBuilder.toString());
+                CharId=""
+                for (var i = 0; i < ListId.length; i++) {
+                        CharId += ListId[i]+",";
+                    }
+                console.log(CharId);
+                $("#cotisants_ids").val(CharId);
+            });
+        });
+    </script>
+</section>
+
+<footer>
+    <p>&copy; 2023 COMIF Bar Étudiant. Tous droits réservés.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>COMIF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .dropdown {
+            position: absolute; /* Utilisation de la position absolue */
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            width: fit-content; /* Définit la largeur de la liste déroulante en fonction de son contenu */
+            min-width: 100%; /* Assure que la liste déroulante ne sera pas plus petite que le bouton */
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content button {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            background-color: #fff;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Personnalisation des positions */
+        .dropdown1 {
+            top: 170px;
+            left: 700px;
+        }
+
+        .dropdown2 {
+            top: 170px;
+            left: 900px;
+        }
+
+        .dropbtn {
+          background-color: #800000;
+          color: white;
+          padding: 12px 16px;
+          font-size: 16px;
+          border: none;
+          cursor: pointer;
+        }
+
+        .dropbtn:hover {
+          background-color: #8b0000;
+        }
+
+        .dropbtn:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Ajout d'une mise en évidence lorsqu'il est en focus */
+        }
+
+
+
+        header {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        nav {
+        background-color: #8B0000; /* Couleur de fond de la barre de navigation */
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        }
+
+
+        nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 30px; /* Taille de police pour les liens de la barre de navigation */
+        padding: 4px 12px; /* Espacement autour des liens de la barre de navigation */
+        border-radius: 5px; /* Bordure arrondie pour les liens de la barre de navigation */
+        background-color: #800000; /* Couleur de fond des liens de la barre de navigation */
+        }
+
+        .navbar {
+          background-color: #000;
+          color: #fff;
+          text-align: center;
+          padding: 10px;
+        }
+
+        nav a:hover {
+          background-color: #B22222; /* Couleur de fond des liens lors du survol */
+        }
+
+        .navbar a {
+          color: #fff;
+          text-decoration: none;
+          margin: 0 10px;
+        }
+        .navbar-dark {
+          background-color: #000080;
+          color: #fff;
+          text-align: center;
+          padding: 10px;
+        }
+
+        section {
+            position: absolute;
+            top: 20px;
+            left: 100px;
+            position: relative;
+            margin-bottom : 750px;
+        }
+
+        #modForm {
+            position: absolute;
+            top: 240px;
+            left: 700px;
+        }
+
+        footer {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+        table {
+          border-collapse: collapse;
+          width: 600px;
+        }
+
+        th, td {
+          border: 1px solid black;
+          padding: 8px;
+        }
+
+        .scrollable-table1 {
+          position: absolute;
+          top: 500px;
+          left: 0px;
+          height: 300px;
+          overflow-y: scroll;
+        }
+        .scrollable-table2 {
+          position: absolute;
+          top: 120px;
+          left: 0px;
+          height: 300px;
+          overflow-y: scroll;
+        }
+        tr.highlight {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>COMIF</h1>
+    <h4 style="color: white;">Connecté en tant que : {{ username }}</h4>
+    <a href="{% url 'logout' %}" style="font-size: 20px; position: absolute; top: 40px; right: 100px;
+     color: white; text-decoration: none;">Déconnexion</a>
+</header>
+
+  <nav>
+    <a href="/welcome">Accueil</a>
+    <a href="/ajtvente">Ventes</a>
+    <a href="/gstsoldes">Caisse</a>
+    <a href="/ajtcotisants">Cotisations</a>
+    <a href="/ajtproduits">Stockage</a>
+    <a href="/tresorerie">Bureau</a>
+  </nav>
+  <div class="navbar">
+    <a href="/ajtvente">Ajouter une vente</a>
+    <a href="/voirventes">Voir les ventes</a>
+    <a href="/voirsupvente">Voir les suppressions</a>
+    <a href="/gstfavoris">Favoris</a>
+  </div>
+
+<section>
+    <h1>Ajouter une vente</h1>
+    <div class="dropdown dropdown1">
+        <button class="dropbtn">Tibbar: produits favoris</button>
+        <div class="dropdown-content">
+            {% for f in dataFavorisTB %}
+            <button class="modBtn2" type="button" data-produit-id="{{ f.produit.id }}"
+                    data-nom="{{ f.produit.nom }}" data-prix="{{ f.produit.prix }}" title="Modifier">
+            {{ f.produit.nom }}</button>
+            {% endfor %}
+        </div>
+    </div>
+     <div class="dropdown dropdown2">
+        <button class="dropbtn">Tipause: produits favoris</button>
+        <div class="dropdown-content">
+            {% for f in dataFavorisTP %}
+            <button class="modBtn2" type="button" data-produit-id="{{ f.produit.id }}"
+                    data-nom="{{ f.produit.nom }}" data-prix="{{ f.produit.prix }}" title="Modifier">
+            {{ f.produit.nom }}</button>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="dropdown" style="position:absolute; left:700px; top:120px;">
+        {% for produit in dataProduits %}
+            {% if produit.nom == 'Ecocup' %}
+            <button class="modBtn2" style="padding: 8px 16px; border: none;
+            background-color: #800000; color: white; font-size: 16px; cursor: pointer; border-radius: 4px; padding-left:33px;padding-right:33px;"
+            type="button"
+                data-produit-id="{{ produit.id }}"
+                    data-nom="{{ produit.nom }}" data-prix="{{ produit.prix }}">Ecocup + </button>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+
+    <div class="dropdown" style="position:absolute; left:840px; top:120px;">
+        {% for produit in dataProduits %}
+        {% if produit.nom == 'Ecocup rendu' %}
+        <button class="modBtn2" style="padding: 8px 16px; border: none;
+            background-color: #800000; color: white; font-size: 16px; cursor: pointer; border-radius: 4px;padding-left:32px;padding-right:31px;"
+            type="button"
+                data-produit-id="{{ produit.id }}"
+                    data-nom="{{ produit.nom }}" data-prix="{{ produit.prix }}">Ecocup - </button>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="dropdown" style="position:absolute; left:969px; top:120px;">
+        {% for produit in dataProduits %}
+        {% if produit.nom == 'Consigne' %}
+        <button class="modBtn2" style="padding: 8px 16px; border: none;
+            background-color: #800000; color: white; font-size: 16px; cursor: pointer; border-radius: 4px; padding-left:36px;padding-right:36px;"
+            type="button"
+                data-produit-id="{{ produit.id }}"
+                    data-nom="{{ produit.nom }}" data-prix="{{ produit.prix }}">Consigne</button>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <h3 style="position:absolute; left:0px; top:420px;">Chercher un produit:</h3>
+
+    <div class="form-group" style="position:absolute; left:0px; top:470px;">
+        <input id="search2" class="form-control" type="text" placeholder="Search...">
+    </div>
+    <br />
+
+    <div class="scrollable-table1">
+        <table width="600" border="1" style="border-collapse:collapse;">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Prix</th>
+                <th>Ajouter à la vente</th>
+            </tr>
+            </thead>
+            <tbody id="myTable2">
+            {% for produit in dataProduits %}
+                <tr>
+                    <td>{{ produit.nom }}</td>
+                    <td>{{ produit.type_produit }}</td>
+                    <td>{{ produit.prix }} €</td>
+                    <td>
+                        <button class="modBtn2" type="button" data-produit-id="{{ produit.id }}"
+                                data-nom="{{ produit.nom }}" data-prix="{{ produit.prix }}" title="Modifier">
+                            Ajouter à la vente
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+            </div>
+    <h3 style="position:absolute; left:0px; top:40px;">Chercher un cotisant:</h3>
+    <div class="form-group" style="position:absolute; left:0px; top:90px;">
+        <input id="search" class="form-control" type="text" placeholder="Search...">
+    </div>
+    <br />
+    <div class="scrollable-table2">
+        <table width="600" border="1" style="border-collapse:collapse;">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Solde</th>
+                <th>Date fin de cotisation</th>
+                <th>Ajouter à la vente</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+                {% for cotisant in dataCotisants %}
+                    <tr {% if cotisant.solde < 0 or cotisant.date_fin < now %}class="highlight"{% endif %}>
+                        <td>{{ cotisant.nom }}</td>
+                        <td>{{ cotisant.prenom }}</td>
+                        <td>{{ cotisant.solde }} €</td>
+                        <td>{{ cotisant.date_fin }}</td>
+                        <td>
+                            <button class="modBtn" type="button" data-cotisant-id="{{ cotisant.id }}"
+                                    data-nom="{{ cotisant.nom }}"
+                                    data-prenom="{{ cotisant.prenom }}" title="Modifier">
+                                Choisir ce client
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+
+        </table>
+    </div>
+
+    <br/>
+    <br/>
+    <form id="modForm" method="POST" action="{% url 'final_vente' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+            <input name="id_client" type="hidden" id="id_client" required>
+            <input name="produits_ids" type="hidden" id="produits_ids" required>
+            <label id="label_id" class="text-dark checkbox-inline">
+                <strong >Client : <span id="cotisantPrenom"></span><span id="cotisantNom"></span></strong>
+            </label>
+        </div>
+        <br />
+        <div id="generatedCode"></div>
+        <br />
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Valider la commande</button>
+        </div>
+    </form>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var maxRows = 4; // Nombre maximum de lignes à afficher
+            // Cacher toutes les lignes au-delà du nombre maximum de lignes
+            $("#myTable tr").each(function (index) {
+                if (index >= maxRows) {
+                    $(this).hide();
+                }
+            });
+            $("#myTable2 tr").each(function (index) {
+                if (index >= maxRows) {
+                    $(this).hide();
+                }
+            });
+
+            $("#search").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                var rowCount = 0;
+
+                $("#myTable tr").each(function () {
+                    var currentRow = $(this);
+
+                    if (currentRow.text().toLowerCase().indexOf(value) > -1) {
+                        currentRow.show();
+                        rowCount++;
+
+                        if (rowCount > maxRows) {
+                            currentRow.hide();
+                        }
+                    } else {
+                        currentRow.hide();
+                    }
+                });
+            });
+
+            $("#search2").on("keyup", function () {
+                var value2 = $(this).val().toLowerCase();
+                var rowCount2 = 0;
+
+                $("#myTable2 tr").each(function () {
+                    var currentRow2 = $(this);
+
+                    if (currentRow2.text().toLowerCase().indexOf(value2) > -1) {
+                        currentRow2.show();
+                        rowCount2++;
+
+                        if (rowCount2 > maxRows) {
+                            currentRow2.hide();
+                        }
+                    } else {
+                        currentRow2.hide();
+                    }
+                });
+            });
+            $(".modBtn").on("click", function () {
+                var cotisantId = $(this).data("cotisant-id");
+                var cotisantNom = $(this).data("nom");
+                var cotisantPrenom = $(this).data("prenom");
+                $("#id_client").val(cotisantId);
+                $("#cotisantNom").text(cotisantNom);
+                $("#cotisantPrenom").text(cotisantPrenom);
+                $("#modForm").show();
+            });
+            var productListName = [];
+            var productListPrice = [];
+            var productListId = [];
+            var CharId = ""
+            $(".modBtn2").on("click", function () {
+                if (productListName.length < 10) {
+                    var produitId = $(this).data("produit-id");
+                    var produitNom = $(this).data("nom");
+                    var produitPrix = $(this).data("prix");
+                    $("#produitId").val(produitId);
+                    $("#produitNom").text(produitNom);
+                    $("#produitPrix").text(produitPrix);
+                    productListName.push(produitNom);
+                    productListPrice.push(produitPrix);
+                    productListId.push(produitId);
+                    console.log(productListName);
+                    console.log(productListPrice);
+                    console.log(productListId);
+                    // Début de la génération du tableau HTML
+                    var total = 0;
+                    var htmlTableBuilder = "";
+                    // Début de la génération du tableau HTML
+                    htmlTableBuilder = "<table width='600' border='1' style='border-collapse:collapse;'>";
+                    // Ajout de l'en-tête du tableau
+                    htmlTableBuilder += "<tr><th></th><th>Nom</th><th>Prix</th><th>Supprimer</th></tr>";
+                    // Parcours des listes avec une boucle for
+                    for (var i = 0; i < productListName.length; i++) {
+                        var productName = productListName[i];
+                        var productPrice = productListPrice[i];
+                        total += parseFloat(productPrice.replace(",", "."));
+                        // Ajout d'une ligne au tableau pour chaque élément de la liste
+                        htmlTableBuilder += "<tr><td>" + (i + 1) + "</td><td>" + productName + "</td><td>" + productPrice + " € </td><td><button class='modBtn3' data-index='" + i + "'>Supprimer de la vente</button></td></tr>";
+                    }
+                    // Formater le total avec 2 décimales
+                    total = total.toFixed(2);
+                    // Fin du tableau HTML
+                    htmlTableBuilder += "<tr><td></td><td> Total </td><td>" + total + " € </td><td></td></tr>";
+                    htmlTableBuilder += "</table>";
+                    console.log(htmlTableBuilder);
+                    $("#generatedCode").html(htmlTableBuilder.toString());
+                } else {
+                    alert("La limite de 10 articles a été atteinte !");
+                }
+                CharId=""
+                for (var i = 0; i < productListName.length; i++) {
+                        CharId += productListId[i]+",";
+                    }
+                console.log(CharId);
+                $("#produits_ids").val(CharId);
+                $("#modForm").show();
+                    });
+
+        $(document).on("click", ".modBtn3", function () {
+            var index = $(this).data("index");
+
+            productListName.splice(index, 1);
+            productListPrice.splice(index, 1);
+            productListId.splice(index, 1);
+
+            console.log(productListName);
+            console.log(productListPrice);
+            console.log(productListId);
+            // Réafficher le tableau mis à jour
+            var total=0;
+            var htmlTableBuilder = "<table width='600' border='1' style='border-collapse:collapse;'>";
+            htmlTableBuilder += "<tr><th></th><th>Nom</th><th>Prix</th><th>Supprimer</th></tr>";
+            for (var i = 0; i < productListName.length; i++) {
+                var productName = productListName[i];
+                var productPrice = productListPrice[i];
+                total += parseFloat(productPrice.replace(",", "."));
+                htmlTableBuilder += "<tr><td>" + (i + 1) + "</td><td>" + productName + "</td><td>" + productPrice + " € </td><td><button class='modBtn3' data-index='" + i + "'>Supprimer de la vente</button></td></tr>";
+            }
+            // Formater le total avec 2 décimales
+            total = total.toFixed(2);
+            htmlTableBuilder += "<tr><td></td><td> Total </td><td>" + total + " € </td><td></td></tr>";
+            htmlTableBuilder += "</table>";
+            console.log(htmlTableBuilder);
+            CharId=""
+                for (var i = 0; i < productListName.length; i++) {
+                        CharId += productListId[i]+",";
+                    }
+            console.log(CharId);
+            $("#produits_ids").val(CharId);
+            $("#generatedCode").html(htmlTableBuilder);
+        });
+        });
+    </script>
+</section>
+
+<footer>
+    <p>&copy; 2023 COMIF Bar Étudiant. Tous droits réservés.</p>
+</footer>
+</body>
+</html>

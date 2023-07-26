@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>COMIF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        nav {
+        background-color: #8B0000; /* Couleur de fond de la barre de navigation */
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        }
+
+
+        nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 30px; /* Taille de police pour les liens de la barre de navigation */
+        padding: 4px 12px; /* Espacement autour des liens de la barre de navigation */
+        border-radius: 5px; /* Bordure arrondie pour les liens de la barre de navigation */
+        background-color: #800000; /* Couleur de fond des liens de la barre de navigation */
+        }
+
+        .navbar {
+          background-color: #000;
+          color: #fff;
+          text-align: center;
+          padding: 10px;
+        }
+
+        nav a:hover {
+          background-color: #B22222; /* Couleur de fond des liens lors du survol */
+        }
+
+        .navbar a {
+          color: #fff;
+          text-decoration: none;
+          margin: 0 10px;
+        }
+        .navbar-dark {
+          background-color: #000080;
+          color: #fff;
+          text-align: center;
+          padding: 10px;
+        }
+
+        section {
+            position: absolute;
+            top: O px;
+            left: 100px;
+            position: relative;
+            margin-bottom: 350px;
+        }
+
+        form {
+            position: absolute;
+            top: 50px;
+            left: 0px;
+        }
+
+        footer {
+            background-color: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto; /* Ajout de cette propriété */
+        }
+        table {
+          border-collapse: collapse;
+          width: 900px;
+        }
+
+        th, td {
+          border: 1px solid black;
+          padding: 8px;
+        }
+
+        .scrollable-table {
+          position: absolute;
+          top: 50px;
+          left: 350px;
+          height: 300px;
+          overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>COMIF</h1>
+    <h4 style="color: white;">Connecté en tant que : {{ username }}</h4>
+    <a href="{% url 'logout' %}" style="font-size: 20px; position: absolute; top: 40px; right: 100px;
+     color: white; text-decoration: none;">Déconnexion</a>
+</header>
+
+  <nav>
+    <a href="/welcome">Accueil</a>
+    <a href="/ajtvente">Ventes</a>
+    <a href="/gstsoldes">Caisse</a>
+    <a href="/ajtcotisants">Cotisations</a>
+    <a href="/ajtproduits">Stockage</a>
+    <a href="/tresorerie">Bureau</a>
+  </nav>
+  <div class="navbar">
+    <a href="/ajtproduits">Ajouter un produit</a>
+    <a href="/gstproduits">Gestion des produits</a>
+    <a href="/supproduits">Supprimer un produit</a>
+    <a href="/type_produits">Type de produit</a>
+    <a href="/voirajtproduits">Voir les modifications</a>
+  </div>
+<section>
+    <div>
+        <h2 style="position:absolute; top:0px; left:0px;">Ajouter un produit :</h2>
+        <form method="POST" class="post-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            Type de produit :
+            <select name="options" >
+                {%for c in dataType %}
+                <option value="{{c.categorie}}">{{c.categorie}}</option>
+                {% endfor %}
+            </select>
+            <br/>
+            <br/>
+            <button type="submit" class="save btn">Enregistrer</button>
+        </form>
+    </div>
+
+    <div class="scrollable-table">
+        <table width="600" border="1" style="border-collapse:collapse;">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for produit in dataProduits %}
+            <tr>
+                <td>{{ produit.nom }}</td>
+                <td>{{ produit.type_produit }}</td>
+                <td>{{ produit.quantity }}</td>
+                <td>{{ produit.prix }} €</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2023 COMIF Bar Étudiant. Tous droits réservés.</p>
+</footer>
+</body>
+</html>
